@@ -1,0 +1,20 @@
+# Build
+build/
+*.class
+*.log
+
+# Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Gradle
+.gradle/
+
+# Misc
+.DS_Store
+*.swp
+*.tmp
+*.bak
+*.orig
