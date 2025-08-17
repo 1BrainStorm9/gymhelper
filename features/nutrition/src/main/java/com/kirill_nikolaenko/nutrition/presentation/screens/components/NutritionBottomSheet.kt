@@ -4,9 +4,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,14 +32,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kirill_nikolaenko.nutrition.R
 import com.kirill_nikolaenko.nutrition.presentation.apple
 import com.kirill_nikolaenko.nutrition.presentation.models.Food
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun NutritionBottomSheet(
     showBottomSheet: Boolean,
@@ -58,10 +62,13 @@ fun NutritionBottomSheet(
     if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = { onDismiss() },
-            sheetState = sheetState
+            sheetState = sheetState,
         ) {
+
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .imePadding(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
@@ -82,7 +89,7 @@ fun FoodBSButtons() {
     ) {
         Icon(
             imageVector = Icons.Default.Delete,
-            contentDescription = "Удалить",
+            contentDescription = stringResource(R.string.delete),
             tint = Color(55, 150, 241, 255),
             modifier = Modifier
                 .size(36.dp)

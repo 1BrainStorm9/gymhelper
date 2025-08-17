@@ -3,6 +3,7 @@ package com.kirill_nikolaenko.nutrition.presentation.screens
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import com.kirill_nikolaenko.nutrition.presentation.apple
 import com.kirill_nikolaenko.nutrition.presentation.screens.components.MacroNutrientsInfo
 import com.kirill_nikolaenko.nutrition.presentation.screens.components.Nutrition
@@ -27,6 +29,9 @@ import com.kirill_nikolaenko.nutrition.presentation.screens.components.Nutrition
 
 class NutritionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         super.onCreate(savedInstanceState)
         setContent {
             NutritionScreen()
@@ -49,7 +54,7 @@ fun NutritionScreen (){
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .verticalScroll(rememberScrollState()),
+                    .verticalScroll(rememberScrollState())
             ){
                 MacroNutrientsInfo(modifier)
                 Nutrition(modifier, onClick = {showBottomSheet = true })
