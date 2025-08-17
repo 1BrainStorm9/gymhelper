@@ -4,118 +4,78 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kirill_nikolaenko.nutrition.R
 import com.kirill_nikolaenko.nutrition.presentation.apple
 import com.kirill_nikolaenko.nutrition.presentation.models.Food
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NutritionBottomSheet(
-    showBottomSheet: Boolean,
+fun NutritionDialog(
+    showDialog: Boolean,
     onDismiss: () -> Unit,
     food: Food
 ) {
-    val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
-    var text by remember { mutableStateOf("") }
-    val onClose = {
-        scope.launch { sheetState.hide() }.invokeOnCompletion {
-            if (!sheetState.isVisible) {
-                onDismiss()
-            }
-        }
-    }
+    var text by remember { mutableStateOf("0") }
 
-    if (showBottomSheet) {
-        ModalBottomSheet(
+    if (showDialog) {
+        AlertDialog(
             onDismissRequest = { onDismiss() },
-            sheetState = sheetState,
-        ) {
-
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .imePadding(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(20.dp)
-            ) {
-                Text(food.title)
-                NutritionInfo(food)
-                FoodWeightChanger(text)
-                FoodBSButtons()
+            title = { Text(food.title) },
+            text = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    NutritionInfo(food)
+                    FoodWeightChanger(text)
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onDismiss()
+                    }
+                ) {
+                    Text("ОК")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { onDismiss() }) {
+                    Text("Отмена")
+                }
             }
-        }
-    }
-}
-
-@Composable
-fun FoodBSButtons() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Icon(
-            imageVector = Icons.Default.Delete,
-            contentDescription = stringResource(R.string.delete),
-            tint = Color(55, 150, 241, 255),
-            modifier = Modifier
-                .size(36.dp)
-                .clickable {}
         )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ){
-            Icon(
-                imageVector = Icons.Default.Refresh,
-                contentDescription = "Обнулить",
-                tint = Color(55, 150, 241, 255),
-                modifier = Modifier
-                    .size(36.dp)
-                    .clickable {}
-            )
-            Icon(
-                imageVector = Icons.Default.Check,
-                contentDescription = "Подтвердить",
-                tint = Color(55, 150, 241, 255),
-                modifier = Modifier
-                    .size(36.dp)
-                    .clickable {}
-            )
-        }
     }
 }
 
@@ -137,9 +97,9 @@ private fun NutritionInfo(food: Food) {
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            CenteredCell("Белки")
-            CenteredCell("Жиры")
-            CenteredCell("Углеводы")
+            CenteredCell(stringResource(R.string.proteins))
+            CenteredCell(stringResource(R.string.fats))
+            CenteredCell(stringResource(R.string.carbs))
             CenteredCell("кКал")
         }
 
@@ -177,20 +137,42 @@ private fun FoodWeightChanger(text: String) {
         StepButtons(
             steps = listOf(-10, -50, -100),
             alignment = Alignment.Start,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(2f),
             onClick = {}
         )
-        OutlinedTextField(
-            value = text1,
-            onValueChange = { text1 = it },
-            label = { Text("") },
-            modifier = Modifier.weight(2f),
-            shape = RoundedCornerShape(10.dp)
-        )
+        Column(
+            modifier = Modifier.weight(3f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            OutlinedTextField(
+                value = text1,
+                onValueChange = { newText ->
+                    text1 = if (newText.isEmpty()) "0" else newText.filter { it.isDigit() }
+                },
+                label = { Text("Вес") },
+                shape = RoundedCornerShape(20.dp),
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Number
+                ),
+                singleLine = true,
+                textStyle = TextStyle(textAlign = TextAlign.Center)
+            )
+            Spacer(modifier = Modifier.size(20.dp))
+            Icon(
+                imageVector = Icons.Default.Refresh,
+                contentDescription = stringResource(R.string.refresh),
+                tint = Color(55, 150, 241, 255),
+                modifier = Modifier
+                    .size(36.dp)
+                    .clickable {}
+            )
+        }
         StepButtons(
             steps = listOf(10, 50, 100),
             alignment = Alignment.End,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(2f),
             onClick = {}
         )
     }
@@ -212,7 +194,12 @@ fun StepButtons(
                 modifier = Modifier.padding(vertical = 2.dp)
             ) {
                 val text = if (step > 0) "+$step" else "$step"
-                Text(text)
+                Text(
+                    text = text,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = 12.sp,
+                )
             }
         }
     }
@@ -221,8 +208,8 @@ fun StepButtons(
 @Preview(showBackground = true)
 @Composable
 fun NutritionBottomSheetPreview(){
-    NutritionBottomSheet(
-        showBottomSheet = true,
+    NutritionDialog(
+        showDialog = true,
         onDismiss = {},
         food = apple
     )

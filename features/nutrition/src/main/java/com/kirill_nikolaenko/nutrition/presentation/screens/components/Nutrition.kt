@@ -1,6 +1,5 @@
 package com.kirill_nikolaenko.nutrition.presentation.screens.components
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -21,7 +20,8 @@ import com.kirill_nikolaenko.nutrition.presentation.models.MealType
 @Composable
 fun Nutrition(
         modifier: Modifier = Modifier,
-        onClick: () -> Unit = {}
+        onClickFood: () -> Unit = {},
+        onClickAdd: () -> Unit = {}
     ){
     val boldTextStyle = TextStyle(color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
     val textStyle = TextStyle(color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.W400)
@@ -44,14 +44,16 @@ fun Nutrition(
                     meal = MealType.Lunch,
                     textStyle = textStyle,
                     boldTextStyle = boldTextStyle,
-                    onClick = {onClick()}
+                    onClickFood = {onClickFood()},
+                    onClickAdd = {onClickAdd}
                 )
                 HorizontalDivider()
                 MealItem(
                     meal = MealType.Breakfast,
                     textStyle = textStyle,
                     boldTextStyle = boldTextStyle,
-                    onClick = {Log.i("MealItem", "Информация о событии")},
+                    onClickFood = {onClickFood()},
+                    onClickAdd = {onClickAdd},
                     foods = listOf(apple)
                 )
                 HorizontalDivider()
@@ -59,14 +61,16 @@ fun Nutrition(
                     meal = MealType.Dinner,
                     textStyle = textStyle,
                     boldTextStyle = boldTextStyle,
-                    onClick = {Log.i("MealItem", "Информация о событии")}
+                    onClickFood = {onClickFood()},
+                    onClickAdd = {onClickAdd},
                 )
                 HorizontalDivider()
                 MealItem(
                     meal = MealType.Snack,
                     textStyle = textStyle,
                     boldTextStyle = boldTextStyle,
-                    onClick = {Log.i("MealItem", "Информация о событии")}
+                    onClickFood = {onClickFood()},
+                    onClickAdd = {onClickAdd},
                 )
 
             }

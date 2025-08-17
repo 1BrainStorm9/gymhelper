@@ -2,4 +2,9 @@
 <resources>
     <string name="title_activity_macro_nutrients_info">MacroNutrientsInfo</string>
     <string name="delete">Удалить</string>
+    <string name="refresh">Обнулить</string>
+    <string name="proteins">Белки</string>
+    <string name="fats">Жиры</string>
+    <string name="carbs">Углеводы</string>
+    <string name="gram">gram</string>
 </resources>

@@ -37,7 +37,8 @@ fun MealItem(
     boldTextStyle: TextStyle,
     size: Dp = 64.dp,
     foods: List<Food> = emptyList(),
-    onClick: () -> Unit = {},
+    onClickAdd: () -> Unit = {},
+    onClickFood: () -> Unit = {},
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -50,10 +51,10 @@ fun MealItem(
             .fillMaxWidth()
             .animateContentSize()
     ) {
-        MealInfo(changeExpanded , meal, size, boldTextStyle, currentValue, textStyle, onClick)
+        MealInfo(changeExpanded , meal, size, boldTextStyle, currentValue, textStyle, onClickAdd)
 
         if (expanded && foods.isNotEmpty()) {
-            ExpandedInfo(foods, boldTextStyle, textStyle)
+            ExpandedInfo(foods, boldTextStyle, textStyle, onClickFood)
         }
     }
 }
@@ -100,7 +101,8 @@ private fun MealInfo(
 private fun ExpandedInfo(
     foods: List<Food>,
     boldTextStyle: TextStyle,
-    textStyle: TextStyle
+    textStyle: TextStyle,
+    onClickFood: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -112,7 +114,7 @@ private fun ExpandedInfo(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable {},
+                    .clickable {onClickFood()},
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {

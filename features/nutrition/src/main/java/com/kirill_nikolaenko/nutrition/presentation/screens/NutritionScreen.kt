@@ -25,7 +25,7 @@ import androidx.core.view.WindowCompat
 import com.kirill_nikolaenko.nutrition.presentation.apple
 import com.kirill_nikolaenko.nutrition.presentation.screens.components.MacroNutrientsInfo
 import com.kirill_nikolaenko.nutrition.presentation.screens.components.Nutrition
-import com.kirill_nikolaenko.nutrition.presentation.screens.components.NutritionBottomSheet
+import com.kirill_nikolaenko.nutrition.presentation.screens.components.NutritionDialog
 
 class NutritionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +43,7 @@ class NutritionActivity : ComponentActivity() {
 @Composable
 fun NutritionScreen (){
     var modifier = Modifier.padding(16.dp)
-    var showBottomSheet by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -57,10 +57,10 @@ fun NutritionScreen (){
                     .verticalScroll(rememberScrollState())
             ){
                 MacroNutrientsInfo(modifier)
-                Nutrition(modifier, onClick = {showBottomSheet = true })
-                NutritionBottomSheet(
-                    showBottomSheet = showBottomSheet,
-                    onDismiss = { showBottomSheet = false },
+                Nutrition(modifier, onClickFood = {showDialog = true })
+                NutritionDialog(
+                    showDialog = showDialog,
+                    onDismiss = { showDialog = false },
                     food = apple,
                 )
             }
