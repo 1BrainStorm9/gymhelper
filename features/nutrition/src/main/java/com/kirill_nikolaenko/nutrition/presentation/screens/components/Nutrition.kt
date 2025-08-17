@@ -45,7 +45,7 @@ fun Nutrition(
                     textStyle = textStyle,
                     boldTextStyle = boldTextStyle,
                     onClickFood = {onClickFood()},
-                    onClickAdd = {onClickAdd}
+                    onClickAdd = {onClickAdd()}
                 )
                 HorizontalDivider()
                 MealItem(
@@ -53,7 +53,7 @@ fun Nutrition(
                     textStyle = textStyle,
                     boldTextStyle = boldTextStyle,
                     onClickFood = {onClickFood()},
-                    onClickAdd = {onClickAdd},
+                    onClickAdd = {onClickAdd()},
                     foods = listOf(apple)
                 )
                 HorizontalDivider()
@@ -62,7 +62,7 @@ fun Nutrition(
                     textStyle = textStyle,
                     boldTextStyle = boldTextStyle,
                     onClickFood = {onClickFood()},
-                    onClickAdd = {onClickAdd},
+                    onClickAdd = {onClickAdd()},
                 )
                 HorizontalDivider()
                 MealItem(
@@ -70,7 +70,7 @@ fun Nutrition(
                     textStyle = textStyle,
                     boldTextStyle = boldTextStyle,
                     onClickFood = {onClickFood()},
-                    onClickAdd = {onClickAdd},
+                    onClickAdd = {onClickAdd()},
                 )
 
             }
