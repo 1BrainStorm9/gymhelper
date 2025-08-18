@@ -1,6 +1,5 @@
 package com.kirill_nikolaenko.gymhelper.ui.components
 
-import SystemBarsConfiguration
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -15,8 +14,6 @@ fun CustomScaffold(
     content: @Composable (paddingValues: PaddingValues) -> Unit
 ) {
     val backgroundColor = MaterialTheme.colorScheme.background
-
-    SystemBarsConfiguration(true, true)
 
     Scaffold(
         topBar = topBar,
