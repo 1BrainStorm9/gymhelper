@@ -14,6 +14,10 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,24 +25,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.kirill_nikolaenko.nutrition.presentation.models.MealType
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.sp
-import com.kirill_nikolaenko.nutrition.presentation.models.Food
+import com.kirill_nikolaenko.nutrition.presentation.model.Food
+import com.kirill_nikolaenko.nutrition.presentation.model.MealItemUIState
+import com.kirill_nikolaenko.nutrition.presentation.model.MealType
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun MealItem(
-    meal: MealType,
-    currentValue: Float = 0f,
-    textStyle: TextStyle,
-    boldTextStyle: TextStyle,
-    size: Dp = 64.dp,
-    foods: List<Food> = emptyList(),
-    onClickAdd: () -> Unit = {},
+    mealItemData: MealItemUIState = MealItemUIState(),
+    mealType: MealType,
     onClickFood: () -> Unit = {},
+    onNavigateToFoodChose: () -> Unit = {},
+    boldTextStyle: TextStyle,
+    textStyle: TextStyle,
+    size: Dp = 64.dp,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -51,23 +52,36 @@ fun MealItem(
             .fillMaxWidth()
             .animateContentSize()
     ) {
-        MealInfo(changeExpanded , meal, size, boldTextStyle, currentValue, textStyle, onClickAdd)
+        MealInfo(
+            currentValue = mealItemData.goal,
+            mealType = mealType,
+            changeExpanded = changeExpanded,
+            onClickAdd = onNavigateToFoodChose,
+            size = size,
+            textStyle = textStyle,
+            boldTextStyle = boldTextStyle
+        )
 
-        if (expanded && foods.isNotEmpty()) {
-            ExpandedInfo(foods, boldTextStyle, textStyle, onClickFood)
+        if (expanded && mealItemData.food.isNotEmpty()) {
+            ExpandedInfo(
+                food = mealItemData.food,
+                onClickFood = onClickFood,
+                textStyle = textStyle,
+                boldTextStyle = boldTextStyle
+            )
         }
     }
 }
 
 @Composable
 private fun MealInfo(
-    changeExpanded: () -> Unit,
-    meal: MealType,
-    size: Dp,
-    boldTextStyle: TextStyle,
     currentValue: Float,
+    mealType: MealType,
+    changeExpanded: () -> Unit,
+    onClickAdd: () -> Unit,
+    size: Dp,
     textStyle: TextStyle,
-    onClick: () -> Unit
+    boldTextStyle: TextStyle
 ) {
     Row(
         modifier = Modifier
@@ -80,9 +94,9 @@ private fun MealInfo(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            MealIcon(meal, size)
+            MealIcon(mealType, size)
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(meal.title, style = boldTextStyle)
+                Text(mealType.title, style = boldTextStyle)
                 Text("${currentValue.toInt()} ккал", style = textStyle)
             }
         }
@@ -92,17 +106,17 @@ private fun MealInfo(
             tint = Color(55, 150, 241, 255),
             modifier = Modifier
                 .size(36.dp)
-                .clickable { onClick() }
+                .clickable { onClickAdd() }
         )
     }
 }
 
 @Composable
 private fun ExpandedInfo(
-    foods: List<Food>,
+    food: ImmutableList<Food>,
+    onClickFood: () -> Unit,
     boldTextStyle: TextStyle,
     textStyle: TextStyle,
-    onClickFood: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -110,7 +124,7 @@ private fun ExpandedInfo(
             .padding(top = 8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        foods.forEach { food ->
+        food.forEach { food ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

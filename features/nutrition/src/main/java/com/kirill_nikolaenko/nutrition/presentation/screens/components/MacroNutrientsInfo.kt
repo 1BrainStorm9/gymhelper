@@ -17,10 +17,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kirill_nikolaenko.nutrition.presentation.model.MacroNutrientsInfoUIState
+import com.kirill_nikolaenko.nutrition.presentation.model.Nutrient
 
 
 @Composable
-fun MacroNutrientsInfo(modifier: Modifier = Modifier) {
+fun MacroNutrientsInfo(
+    modifier: Modifier = Modifier,
+    state: MacroNutrientsInfoUIState = MacroNutrientsInfoUIState(),
+    progress: Float,
+) {
     var boldTextStyle = TextStyle(color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
     var textStyle = TextStyle(color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.W500)
     var buttonsTextStyle = TextStyle(color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
@@ -37,19 +43,30 @@ fun MacroNutrientsInfo(modifier: Modifier = Modifier) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CircleIndicatorWithInfo(
-                    currentValue = 100f,
-                    targetValue = 2100f,
+                    currentValue = state.calories.current,
+                    targetValue = state.calories.total,
+                    progressValue = progress,
                     boldTextStyle =  boldTextStyle,
                     textStyle = textStyle
                 )
-                LineIndicators(textStyle)
+                LineIndicators(
+                    protein = state.proteins,
+                    fats = state.fats,
+                    carbs = state.carbs,
+                    textStyle = textStyle
+                )
             }
         }
     }
 }
 
 @Composable
-private fun LineIndicators(textStyle: TextStyle) {
+private fun LineIndicators(
+    protein: Nutrient = Nutrient(),
+    fats: Nutrient = Nutrient(),
+    carbs: Nutrient = Nutrient(),
+    textStyle: TextStyle
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -57,23 +74,23 @@ private fun LineIndicators(textStyle: TextStyle) {
 
         LineProgressWithText(
             title = "Белки",
-            currentValue = 100f,
-            targetValue = 150f,
+            currentValue = protein.current,
+            targetValue = protein.total,
             textStyle = textStyle,
             modifier = Modifier.weight(1f)
         )
 
         LineProgressWithText(
             title = "Жиры",
-            currentValue = 10f,
-            targetValue = 20f,
+            currentValue = fats.current,
+            targetValue = fats.total,
             textStyle = textStyle,
             modifier = Modifier.weight(1f)
         )
         LineProgressWithText(
             title = "Углеводы",
-            currentValue = 75f,
-            targetValue = 150f,
+            currentValue = carbs.current,
+            targetValue = carbs.total,
             textStyle = textStyle,
             modifier = Modifier.weight(1f)
         )
@@ -85,7 +102,8 @@ private fun CircleIndicatorWithInfo(
     targetValue: Float,
     currentValue: Float,
     boldTextStyle: TextStyle,
-    textStyle: TextStyle
+    textStyle: TextStyle,
+    progressValue: Float
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -105,6 +123,7 @@ private fun CircleIndicatorWithInfo(
             CircularProgressWithText(
                 currentValue = currentValue,
                 targetValue = targetValue,
+                progressValue = progressValue,
                 modifier = Modifier.size(100.dp),
                 boldTextStyle = boldTextStyle,
                 textStyle = textStyle,
@@ -140,5 +159,9 @@ private fun VerticalText(description: String, value: Int = 0, textStyle: TextSty
 private fun MacroNutrientsInfoPreview() {
     var modifier = Modifier
 
-    MacroNutrientsInfo(modifier)
+    MacroNutrientsInfo(
+        modifier,
+        state = MacroNutrientsInfoUIState(),
+        progress = 0f,
+    )
 }

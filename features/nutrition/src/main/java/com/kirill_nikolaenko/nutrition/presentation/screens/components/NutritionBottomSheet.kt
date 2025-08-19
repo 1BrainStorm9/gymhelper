@@ -38,7 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kirill_nikolaenko.nutrition.R
 import com.kirill_nikolaenko.nutrition.presentation.apple
-import com.kirill_nikolaenko.nutrition.presentation.models.Food
+import com.kirill_nikolaenko.nutrition.presentation.model.Food
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

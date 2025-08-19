@@ -1,7 +1,10 @@
 package com.kirill_nikolaenko.nutrition.presentation.screens.components
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,6 +23,7 @@ import androidx.compose.ui.unit.dp
 fun CircularProgressWithText(
     currentValue: Float = 0f,
     targetValue: Float = 1f,
+    progressValue: Float = 0f,
     modifier: Modifier = Modifier,
     strokeWidth: Float = 15f,
     backgroundColor: Color = Color.DarkGray,
@@ -34,7 +38,6 @@ fun CircularProgressWithText(
             val radius = size / 2
             val center = Offset(size / 2, size / 2)
             val stroke = Stroke(width = strokeWidth, cap = StrokeCap.Round)
-            val progress = currentValue/targetValue
 
             scale(scale,scale){
                 drawArc(
@@ -50,7 +53,7 @@ fun CircularProgressWithText(
                 drawArc(
                     color = progressColor,
                     startAngle = 135f,
-                    sweepAngle = 270f * progress.coerceIn(0f, 1f),
+                    sweepAngle = 270f * progressValue.coerceIn(0f, 1f),
                     useCenter = false,
                     style = stroke,
                     topLeft = Offset(center.x - radius, center.y - radius),

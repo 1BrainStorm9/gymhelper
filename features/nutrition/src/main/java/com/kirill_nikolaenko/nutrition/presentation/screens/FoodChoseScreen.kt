@@ -36,7 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kirill_nikolaenko.nutrition.presentation.apple
-import com.kirill_nikolaenko.nutrition.presentation.models.Food
+import com.kirill_nikolaenko.nutrition.presentation.model.Food
 
 val SEARCHBAR_SIZE = 56.dp
 

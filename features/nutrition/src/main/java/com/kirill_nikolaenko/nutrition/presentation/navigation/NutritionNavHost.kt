@@ -14,7 +14,7 @@ sealed class NutritionScreens(val route: String) {
 
 fun NavGraphBuilder.nutritionNavGraph(navController: NavHostController) {
     composable(NutritionScreens.Nutrition.route) {
-        NutritionScreen(onClickAddFood = {
+        NutritionScreen(onNavigateToFoodChose = {
             navController.navigate(NutritionScreens.FoodChose.route)
         })
     }

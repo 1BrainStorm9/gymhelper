@@ -1,6 +1,6 @@
 package com.kirill_nikolaenko.nutrition.presentation
 
-import com.kirill_nikolaenko.nutrition.presentation.models.Food
+import com.kirill_nikolaenko.nutrition.presentation.model.Food
 
 
 val apple = Food(

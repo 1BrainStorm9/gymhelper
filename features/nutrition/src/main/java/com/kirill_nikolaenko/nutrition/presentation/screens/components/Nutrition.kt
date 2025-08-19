@@ -13,16 +13,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kirill_nikolaenko.nutrition.presentation.apple
-import com.kirill_nikolaenko.nutrition.presentation.models.MealType
+import com.kirill_nikolaenko.nutrition.presentation.model.MealItemUIState
+import com.kirill_nikolaenko.nutrition.presentation.model.MealType
 
 
 @Composable
 fun Nutrition(
-        modifier: Modifier = Modifier,
-        onClickFood: () -> Unit = {},
-        onClickAdd: () -> Unit = {}
+    modifier: Modifier = Modifier,
+    onClickFood: () -> Unit = {},
+    onNavigateToFoodChose: () -> Unit = {},
+    getMealsData: (MealType) -> MealItemUIState = { MealItemUIState() }
     ){
+
     val boldTextStyle = TextStyle(color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
     val textStyle = TextStyle(color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.W400)
     val buttonsTextStyle = TextStyle(color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
@@ -41,36 +43,39 @@ fun Nutrition(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 MealItem(
-                    meal = MealType.Lunch,
-                    textStyle = textStyle,
-                    boldTextStyle = boldTextStyle,
+                    mealItemData = getMealsData(MealType.Lunch),
+                    mealType = MealType.Lunch,
                     onClickFood = {onClickFood()},
-                    onClickAdd = {onClickAdd()}
+                    onNavigateToFoodChose = {onNavigateToFoodChose()},
+                    textStyle = textStyle,
+                    boldTextStyle = boldTextStyle
                 )
                 HorizontalDivider()
                 MealItem(
-                    meal = MealType.Breakfast,
-                    textStyle = textStyle,
-                    boldTextStyle = boldTextStyle,
+                    mealItemData = getMealsData(MealType.Breakfast),
+                    mealType = MealType.Breakfast,
                     onClickFood = {onClickFood()},
-                    onClickAdd = {onClickAdd()},
-                    foods = listOf(apple)
+                    onNavigateToFoodChose = {onNavigateToFoodChose()},
+                    textStyle = textStyle,
+                    boldTextStyle = boldTextStyle
                 )
                 HorizontalDivider()
                 MealItem(
-                    meal = MealType.Dinner,
+                    mealItemData = getMealsData(MealType.Dinner),
+                    mealType = MealType.Dinner,
+                    onClickFood = {onClickFood()},
+                    onNavigateToFoodChose = {onNavigateToFoodChose()},
                     textStyle = textStyle,
                     boldTextStyle = boldTextStyle,
-                    onClickFood = {onClickFood()},
-                    onClickAdd = {onClickAdd()},
                 )
                 HorizontalDivider()
                 MealItem(
-                    meal = MealType.Snack,
+                    mealItemData = getMealsData(MealType.Snack),
+                    mealType = MealType.Snack,
+                    onClickFood = {onClickFood()},
+                    onNavigateToFoodChose = {onNavigateToFoodChose()},
                     textStyle = textStyle,
                     boldTextStyle = boldTextStyle,
-                    onClickFood = {onClickFood()},
-                    onClickAdd = {onClickAdd()},
                 )
 
             }
