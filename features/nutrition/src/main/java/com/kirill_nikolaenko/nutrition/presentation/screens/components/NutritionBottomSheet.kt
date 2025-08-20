@@ -1,4 +1,5 @@
 package com.kirill_nikolaenko.nutrition.presentation.screens.components
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,10 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,21 +35,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kirill_nikolaenko.nutrition.R
-import com.kirill_nikolaenko.nutrition.presentation.apple
 import com.kirill_nikolaenko.nutrition.presentation.model.Food
-
+import com.kirill_nikolaenko.nutrition.presentation.model.MealType
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NutritionDialog(
     showDialog: Boolean,
+    newText: String = "",
+    food: Food?,
+    mealType: MealType?,
     onDismiss: () -> Unit,
-    food: Food
+    onChangeWeight: (String) -> Unit = { _ -> },
+    onConfirm: (Food, MealType, Float) -> Unit = { _, _, _ -> }
 ) {
-    var text by remember { mutableStateOf("0") }
 
-    if (showDialog) {
+    SideEffect {
+        Log.d("!!!", "Recompose: NutritionDialog")
+    }
+
+    if (showDialog && food != null && mealType != null) {
         AlertDialog(
             onDismissRequest = { onDismiss() },
             title = { Text(food.title) },
@@ -60,12 +64,14 @@ fun NutritionDialog(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     NutritionInfo(food)
-                    FoodWeightChanger(text)
+                    FoodWeightChanger(newText, onChangeWeight)
                 }
             },
             confirmButton = {
                 Button(
                     onClick = {
+                        val result = newText.toFloatOrNull() ?: 0f
+                        onConfirm(food, mealType, result)
                         onDismiss()
                     }
                 ) {
@@ -128,19 +134,26 @@ fun RowScope.CenteredCell(text: String) {
     )
 }
 
-@Composable
-private fun FoodWeightChanger(text: String) {
-    var text1 = text
+fun formatString(value: String): String{
+    return if (value.matches(Regex("^\\d*$"))) {
+        if (value.isEmpty()) "" else value
+    } else {
+        ""
+    }
+}
 
+@Composable
+private fun FoodWeightChanger(newText: String, onChangeText: (String) -> Unit) {
     Row (
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ){
         StepButtons(
+            newText = newText,
             steps = listOf(-10, -50, -100),
             alignment = Alignment.Start,
             modifier = Modifier.weight(2f),
-            onClick = {}
+            onClick = { text -> onChangeText(text) }
         )
         Column(
             modifier = Modifier.weight(3f),
@@ -148,9 +161,9 @@ private fun FoodWeightChanger(text: String) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OutlinedTextField(
-                value = text1,
-                onValueChange = { newText ->
-                    text1 = if (newText.isEmpty()) "0" else newText.filter { it.isDigit() }
+                value = newText.toString(),
+                onValueChange = { value ->
+                    onChangeText(formatString(value))
                 },
                 label = { Text("Вес") },
                 shape = RoundedCornerShape(20.dp),
@@ -168,31 +181,40 @@ private fun FoodWeightChanger(text: String) {
                 tint = Color(55, 150, 241, 255),
                 modifier = Modifier
                     .size(36.dp)
-                    .clickable {}
+                    .clickable {
+                        onChangeText("")
+                    }
             )
         }
         StepButtons(
+            newText = newText,
             steps = listOf(10, 50, 100),
             alignment = Alignment.End,
             modifier = Modifier.weight(2f),
-            onClick = {}
+            onClick = { weight -> onChangeText(weight) }
         )
     }
 }
 
 @Composable
 fun StepButtons(
+    modifier: Modifier = Modifier,
+    newText: String = "",
     steps: List<Int>,
-    onClick: (Int) -> Unit,
-    alignment: Alignment.Horizontal,
-    modifier: Modifier = Modifier
+    onClick: (String) -> Unit,
+    alignment: Alignment.Horizontal
 ) {
     Column(
         modifier = modifier,
         horizontalAlignment = alignment) {
         steps.forEach { step ->
             Button(
-                onClick = { onClick(step) },
+                onClick = {
+                    val formatted = if(formatString(newText) == "") "0" else formatString(newText)
+                    var sum = formatted.toInt() + step
+                    if (sum < 0) sum = 0
+                    onClick(sum.toString())
+                },
                 modifier = Modifier.padding(vertical = 2.dp)
             ) {
                 val text = if (step > 0) "+$step" else "$step"
@@ -213,6 +235,7 @@ fun NutritionBottomSheetPreview(){
     NutritionDialog(
         showDialog = true,
         onDismiss = {},
-        food = apple
+        food = null,
+        mealType = null,
     )
 }

@@ -14,10 +14,6 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,17 +31,13 @@ import kotlinx.collections.immutable.ImmutableList
 fun MealItem(
     mealItemData: MealItemUIState = MealItemUIState(),
     mealType: MealType,
-    onClickFood: () -> Unit = {},
+    changeExpanded: (MealType) -> Unit = {},
+    onClickFood: (Food, MealType) -> Unit = {_,_ ->},
     onNavigateToFoodChose: () -> Unit = {},
     boldTextStyle: TextStyle,
     textStyle: TextStyle,
-    size: Dp = 64.dp,
+    size: Dp = 52.dp,
 ) {
-    var expanded by remember { mutableStateOf(false) }
-
-    val changeExpanded = {
-        expanded = !expanded
-    }
 
     Column(
         modifier = Modifier
@@ -55,18 +47,19 @@ fun MealItem(
         MealInfo(
             currentValue = mealItemData.goal,
             mealType = mealType,
-            changeExpanded = changeExpanded,
+            onClickItem = changeExpanded,
             onClickAdd = onNavigateToFoodChose,
             size = size,
             textStyle = textStyle,
             boldTextStyle = boldTextStyle
         )
 
-        if (expanded && mealItemData.food.isNotEmpty()) {
+        if (mealItemData.isExpanded && mealItemData.food.isNotEmpty()) {
             ExpandedInfo(
                 food = mealItemData.food,
-                onClickFood = onClickFood,
+                onClickFood = {food, mealType -> onClickFood(food, mealType)},
                 textStyle = textStyle,
+                mealType = mealType,
                 boldTextStyle = boldTextStyle
             )
         }
@@ -77,7 +70,7 @@ fun MealItem(
 private fun MealInfo(
     currentValue: Float,
     mealType: MealType,
-    changeExpanded: () -> Unit,
+    onClickItem: (MealType) -> Unit = { },
     onClickAdd: () -> Unit,
     size: Dp,
     textStyle: TextStyle,
@@ -86,7 +79,9 @@ private fun MealInfo(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { changeExpanded() },
+            .clickable {
+                onClickItem(mealType)
+            },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -114,7 +109,8 @@ private fun MealInfo(
 @Composable
 private fun ExpandedInfo(
     food: ImmutableList<Food>,
-    onClickFood: () -> Unit,
+    mealType: MealType,
+    onClickFood: (Food, MealType) -> Unit = {_,_ ->},
     boldTextStyle: TextStyle,
     textStyle: TextStyle,
 ) {
@@ -128,7 +124,7 @@ private fun ExpandedInfo(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable {onClickFood()},
+                    .clickable {onClickFood(food,mealType)},
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {

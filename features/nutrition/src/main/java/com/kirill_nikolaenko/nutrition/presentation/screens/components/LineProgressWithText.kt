@@ -24,6 +24,7 @@ fun LineProgressWithText(
     title: String = "no data",
     currentValue: Float = 0f,
     targetValue: Float = 1f,
+    progress: Float = 0f,
     indicatorWidth:Float = 0.8f,
     progressColor: Color = Color(0xFF3482D3),
     backgroundColor: Color = Color.DarkGray,
@@ -41,7 +42,7 @@ fun LineProgressWithText(
         )
 
         ProgressLine(
-            progress = currentValue / targetValue,
+            progress = progress,
             progressColor = progressColor,
             backgroundColor = backgroundColor,
             strokeWidth = strokeWidth,

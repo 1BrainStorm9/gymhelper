@@ -1,10 +1,12 @@
 package com.kirill_nikolaenko.nutrition.presentation.screens.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,17 +15,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kirill_nikolaenko.nutrition.presentation.model.Food
 import com.kirill_nikolaenko.nutrition.presentation.model.MealItemUIState
 import com.kirill_nikolaenko.nutrition.presentation.model.MealType
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentMapOf
 
 
 @Composable
 fun Nutrition(
     modifier: Modifier = Modifier,
-    onClickFood: () -> Unit = {},
+    onClickFood: (Food, MealType) -> Unit = {_,_ ->},
     onNavigateToFoodChose: () -> Unit = {},
-    getMealsData: (MealType) -> MealItemUIState = { MealItemUIState() }
+    state:ImmutableMap<MealType, MealItemUIState> = persistentMapOf(),
+    changeExpanded: (MealType) -> Unit = {}
     ){
+
+    SideEffect {
+        Log.d("!!!", "Recompose: Nutrition")
+    }
 
     val boldTextStyle = TextStyle(color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
     val textStyle = TextStyle(color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.W400)
@@ -43,39 +53,43 @@ fun Nutrition(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 MealItem(
-                    mealItemData = getMealsData(MealType.Lunch),
-                    mealType = MealType.Lunch,
-                    onClickFood = {onClickFood()},
-                    onNavigateToFoodChose = {onNavigateToFoodChose()},
-                    textStyle = textStyle,
-                    boldTextStyle = boldTextStyle
-                )
-                HorizontalDivider()
-                MealItem(
-                    mealItemData = getMealsData(MealType.Breakfast),
+                    mealItemData = state[MealType.Breakfast] ?: MealItemUIState(),
                     mealType = MealType.Breakfast,
-                    onClickFood = {onClickFood()},
-                    onNavigateToFoodChose = {onNavigateToFoodChose()},
+                    onClickFood = {food, mealType -> onClickFood(food, mealType)},
+                    onNavigateToFoodChose = { onNavigateToFoodChose() },
                     textStyle = textStyle,
-                    boldTextStyle = boldTextStyle
+                    boldTextStyle = boldTextStyle,
+                    changeExpanded = changeExpanded,
                 )
                 HorizontalDivider()
                 MealItem(
-                    mealItemData = getMealsData(MealType.Dinner),
+                    mealItemData = state[MealType.Lunch] ?: MealItemUIState(),
+                    mealType = MealType.Lunch,
+                    onClickFood = {food, mealType -> onClickFood(food, mealType)},
+                    onNavigateToFoodChose = {onNavigateToFoodChose()},
+                    textStyle = textStyle,
+                    boldTextStyle = boldTextStyle,
+                    changeExpanded = changeExpanded,
+                )
+                HorizontalDivider()
+                MealItem(
+                    mealItemData = state[MealType.Dinner] ?: MealItemUIState(),
                     mealType = MealType.Dinner,
-                    onClickFood = {onClickFood()},
+                    onClickFood = {food, mealType -> onClickFood(food, mealType)},
                     onNavigateToFoodChose = {onNavigateToFoodChose()},
                     textStyle = textStyle,
                     boldTextStyle = boldTextStyle,
+                    changeExpanded = changeExpanded,
                 )
                 HorizontalDivider()
                 MealItem(
-                    mealItemData = getMealsData(MealType.Snack),
+                    mealItemData = state[MealType.Snack] ?: MealItemUIState(),
                     mealType = MealType.Snack,
-                    onClickFood = {onClickFood()},
+                    onClickFood = {food, mealType -> onClickFood(food, mealType)},
                     onNavigateToFoodChose = {onNavigateToFoodChose()},
                     textStyle = textStyle,
                     boldTextStyle = boldTextStyle,
+                    changeExpanded = changeExpanded,
                 )
 
             }

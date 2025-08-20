@@ -1,5 +1,6 @@
 package com.kirill_nikolaenko.nutrition.presentation.screens.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,15 +20,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kirill_nikolaenko.nutrition.presentation.model.MacroNutrientsInfoUIState
-import com.kirill_nikolaenko.nutrition.presentation.model.Nutrient
 
 
 @Composable
 fun MacroNutrientsInfo(
     modifier: Modifier = Modifier,
     state: MacroNutrientsInfoUIState = MacroNutrientsInfoUIState(),
-    progress: Float,
 ) {
+
+    SideEffect {
+        Log.d("!!!", "Recompose: MacroNutrientsInfo")
+    }
+
     var boldTextStyle = TextStyle(color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
     var textStyle = TextStyle(color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.W500)
     var buttonsTextStyle = TextStyle(color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
@@ -37,7 +42,7 @@ fun MacroNutrientsInfo(
             textStyle = buttonsTextStyle
         )
 
-        StyledBox(){
+        StyledBox{
             Column(
                 modifier = Modifier.padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -45,14 +50,12 @@ fun MacroNutrientsInfo(
                 CircleIndicatorWithInfo(
                     currentValue = state.calories.current,
                     targetValue = state.calories.total,
-                    progressValue = progress,
+                    progressValue = state.caloriesProgress,
                     boldTextStyle =  boldTextStyle,
                     textStyle = textStyle
                 )
                 LineIndicators(
-                    protein = state.proteins,
-                    fats = state.fats,
-                    carbs = state.carbs,
+                    state = state,
                     textStyle = textStyle
                 )
             }
@@ -62,9 +65,7 @@ fun MacroNutrientsInfo(
 
 @Composable
 private fun LineIndicators(
-    protein: Nutrient = Nutrient(),
-    fats: Nutrient = Nutrient(),
-    carbs: Nutrient = Nutrient(),
+    state: MacroNutrientsInfoUIState,
     textStyle: TextStyle
 ) {
     Row(
@@ -74,23 +75,26 @@ private fun LineIndicators(
 
         LineProgressWithText(
             title = "Белки",
-            currentValue = protein.current,
-            targetValue = protein.total,
+            currentValue = state.proteins.current,
+            targetValue = state.proteins.total,
+            progress = state.proteinsProgress,
             textStyle = textStyle,
             modifier = Modifier.weight(1f)
         )
 
         LineProgressWithText(
             title = "Жиры",
-            currentValue = fats.current,
-            targetValue = fats.total,
+            currentValue = state.fats.current,
+            targetValue = state.fats.total,
+            progress = state.fatsProgress,
             textStyle = textStyle,
             modifier = Modifier.weight(1f)
         )
         LineProgressWithText(
             title = "Углеводы",
-            currentValue = carbs.current,
-            targetValue = carbs.total,
+            currentValue = state.carbs.current,
+            targetValue = state.carbs.total,
+            progress = state.carbsProgress,
             textStyle = textStyle,
             modifier = Modifier.weight(1f)
         )
@@ -162,6 +166,5 @@ private fun MacroNutrientsInfoPreview() {
     MacroNutrientsInfo(
         modifier,
         state = MacroNutrientsInfoUIState(),
-        progress = 0f,
     )
 }

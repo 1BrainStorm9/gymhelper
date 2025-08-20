@@ -5,9 +5,9 @@ import com.kirill_nikolaenko.nutrition.presentation.model.Food
 
 val apple = Food(
     title = "Яблоко",
-    proteins = 0.3f,
-    fats = 0.2f,
-    carbs = 14f,
+    baseProteins = 0.3f,
+    baseFats = 0.2f,
+    baseCarbs = 14f,
     weight = 100f,
-    calories = 52f,
+    baseCalories = 52f,
 )
